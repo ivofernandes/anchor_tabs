@@ -3,28 +3,37 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 /// Widget to manage multiple tabs that scroll
 class AnchorTabPanel extends StatefulWidget {
-  // Tabs that will move the scroll to the body widget
+  /// Tabs that will move the scroll to the body widget
   final List<Widget> tabs;
 
+  /// Widgets that will be inserted in a scrollable column 
   final List<Widget> body;
-  final int animationDuration;
+
+  /// Duration of the animation that selects the tab
+  final Duration animationDuration;
+
+  /// Curve of the animation that selects the tab
   final Curve animationCurve;
+
+  /// Controller for the body scroll
   final ScrollController? scrollController;
 
+  /// Height of the tab bar buttons
   final double tabHeight;
+
+  /// Height for the selected tab button
   final double selectedTabHeight;
 
-  // Flag to avoid build each time the state changes,
-  // is quite annoying for development so by default is setted to false
-  final bool prod;
+  // Flag to avoid build each time the state changes
+  final bool rebuildBody;
 
   const AnchorTabPanel(
       {required this.tabs,
       required this.body,
-      this.animationDuration = 1000,
+      this.animationDuration = const Duration(milliseconds: 1000),
       this.animationCurve = Curves.ease,
       this.scrollController,
-      this.prod = false,
+      this.rebuildBody = true,
       this.tabHeight = 35,
       this.selectedTabHeight = 40,
       Key? key})
@@ -60,11 +69,12 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
     Widget tabsWidget = createTabsWidget();
 
     List<Widget> blocks = [];
+
     // Create the body widgets just once
     // as the set state is just to to control the selected tab
     if (visibility == null ||
         visibility!.length != widget.tabs.length ||
-        !widget.prod) {
+        widget.rebuildBody) {
       visibility = List.generate(widget.tabs.length, (index) => 0);
       keysBody = List.generate(widget.body.length, (index) => null);
       for (int i = 0; i < widget.body.length; i++) {
@@ -99,7 +109,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
 
     for (int i = 0; i < widget.tabs.length; i++) {
       Widget widgetMapKey = widget.tabs[i];
-      GlobalKey tabKey = GlobalKey(debugLabel: 'tab' + i.toString());
+      GlobalKey tabKey = GlobalKey(debugLabel: 'tab $i');
       keysTabs[i] = tabKey;
 
       tabsItems.add(Container(
@@ -173,7 +183,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
   void scrollToWidgetWithKey(GlobalKey key) {
     if (key.currentContext != null) {
       Scrollable.ensureVisible(key.currentContext!,
-          duration: Duration(milliseconds: widget.animationDuration),
+          duration: widget.animationDuration,
           curve: widget.animationCurve);
     }
   }

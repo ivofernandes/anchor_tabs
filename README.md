@@ -1,39 +1,73 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+This project is a way to implement a anchor tabs panel like the one of the rhymit.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+![Yahoo Finance data](https://raw.githubusercontent.com/ivofernandes/anchor_tabs/master/docs/usage_example.gif?raw=true)
 
 ## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Tab button scroll to the block
+Scrolling will update the tab button selected
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+
+Add the dependency to your `pubspec.yaml`:
+```
+anchor_tabs: ^0.0.1
+```
 
 ## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+class SimpleExample extends StatelessWidget {
+  const SimpleExample({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> tabsText = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+
+    List<Widget> tabs = [];
+    List<Widget> body = [];
+
+    for (var element in tabsText) {
+      // Create a tab item
+      tabs.add(Text(element));
+
+      // Create a target item
+      body.add(ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          controller: ScrollController(),
+          itemCount: 40,
+          itemBuilder: (BuildContext ctxt, int i) {
+            return Text('$element  $i',
+                style: Theme.of(ctxt).textTheme.headline6);
+          }));
+    }
+
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          const Text('Simple example of anchor tabs'),
+          Expanded(child: AnchorTabPanel(tabs: tabs, body: body)),
+        ],
+      ),
+    );
+  }
+}
+
 ```
 
 ## Additional information
+This AnchorTabPanel widget have more fields like the one to configure the size of the tab buttons
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+## Like us on pub.dev
+Package url:
+https://pub.dev/packages/anchor_tabs
+
+
+## Contribute on github
+If you have some problem that this package doesn't solve feel free to contribute on github
+https://github.com/ivofernandes/anchor_tabs
+
+## Instruction to publish the package to pub.dev
+dart pub publish

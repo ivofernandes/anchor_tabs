@@ -40,6 +40,8 @@ class MyApp extends StatelessWidget {
 }
 
 class SimpleExample extends StatelessWidget {
+  const SimpleExample({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     List<String> tabsText = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
@@ -68,7 +70,11 @@ class SimpleExample extends StatelessWidget {
       child: Column(
         children: [
           const Text('Simple example of anchor tabs'),
-          Expanded(child: AnchorTabPanel(tabs: tabs, body: body)),
+          Expanded(
+              child: AnchorTabPanel(
+            tabs: tabs,
+            body: body,
+          )),
         ],
       ),
     );
