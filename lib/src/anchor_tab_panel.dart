@@ -6,7 +6,7 @@ class AnchorTabPanel extends StatefulWidget {
   /// Tabs that will move the scroll to the body widget
   final List<Widget> tabs;
 
-  /// Widgets that will be inserted in a scrollable column 
+  /// Widgets that will be inserted in a scrollable column
   final List<Widget> body;
 
   /// Duration of the animation that selects the tab
@@ -24,7 +24,7 @@ class AnchorTabPanel extends StatefulWidget {
   /// Height for the selected tab button
   final double selectedTabHeight;
 
-  // Flag to avoid build each time the state changes
+  /// Flag that you can put to false to avoid build each time the selected tab changes
   final bool rebuildBody;
 
   const AnchorTabPanel(
@@ -183,8 +183,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
   void scrollToWidgetWithKey(GlobalKey key) {
     if (key.currentContext != null) {
       Scrollable.ensureVisible(key.currentContext!,
-          duration: widget.animationDuration,
-          curve: widget.animationCurve);
+          duration: widget.animationDuration, curve: widget.animationCurve);
     }
   }
 

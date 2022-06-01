@@ -1,7 +1,9 @@
 This project is a way to implement a anchor tabs panel like the one of the rhymit.
 
+The idea is that sometimes you have a big list where you can scroll, 
+but you still want buttons to help the user to navigate to different scroll positions, and also want that the selected button keeps updated as you scroll
 
-![Yahoo Finance data](https://raw.githubusercontent.com/ivofernandes/anchor_tabs/master/docs/usage_example.gif?raw=true)
+![Anchor tabs demo](https://raw.githubusercontent.com/ivofernandes/anchor_tabs/master/doc/usage_example.gif?raw=true)
 
 ## Features
 Tab button scroll to the block
