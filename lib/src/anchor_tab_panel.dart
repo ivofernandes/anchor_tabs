@@ -60,6 +60,8 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
   // Selected tab
   int selectedTab = 0;
 
+  DateTime ensureVisibleTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     keysTabs = List.generate(widget.tabs.length, (index) => null);
@@ -170,6 +172,10 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
           bool isVisible = visiblePercentage > 0;
           if (validIndex && changedTab && isVisible) {
             if (mounted) {
+              if(DateTime.now().isBefore(ensureVisibleTime.add(widget.animationDuration))){
+                return;
+              }
+
               setState(() {
                 selectedTab = currentIndex;
                 scrollToWidgetWithKey(keysTabs[currentIndex]!);
@@ -182,6 +188,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
 
   void scrollToWidgetWithKey(GlobalKey key) {
     if (key.currentContext != null) {
+      ensureVisibleTime = DateTime.now();
       Scrollable.ensureVisible(key.currentContext!,
           duration: widget.animationDuration, curve: widget.animationCurve);
     }
