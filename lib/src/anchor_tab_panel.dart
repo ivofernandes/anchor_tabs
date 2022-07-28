@@ -172,7 +172,8 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
           bool isVisible = visiblePercentage > 0;
           if (validIndex && changedTab && isVisible) {
             if (mounted) {
-              if(DateTime.now().isBefore(ensureVisibleTime.add(widget.animationDuration))){
+              if (DateTime.now()
+                  .isBefore(ensureVisibleTime.add(widget.animationDuration))) {
                 return;
               }
 
