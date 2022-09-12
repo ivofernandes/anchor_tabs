@@ -4,3 +4,5 @@ Anchor tabs initial version
 Avoid rebuild loops caused by ensure visible in the header buttons
 ## 0.0.3
 Reformat
+## 0.0.4
+Improved example and documentation

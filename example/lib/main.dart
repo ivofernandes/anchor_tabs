@@ -1,5 +1,4 @@
 import 'package:anchor_tabs/anchor_tabs.dart';
-import 'package:example/multi_scroll_example.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,22 +17,22 @@ class MyApp extends StatelessWidget {
         home: Builder(
           builder: (context) => Scaffold(
             appBar: AppBar(
-              title: Text('Anchor tabs example'),
+              title: const Text('Anchor tabs example'),
               actions: [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.add,
                   ),
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return MultiScrollExample();
+                      return const MultiScrollExample();
                     }),
                   ),
                 )
               ],
             ),
-            body: SimpleExample(),
+            body: const SimpleExample(),
           ),
         ));
   }
@@ -78,5 +77,65 @@ class SimpleExample extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MultiScrollExample extends StatelessWidget {
+  const MultiScrollExample({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    int columnNumber = 6;
+    List<String> tabsTextList = [
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j'
+    ];
+
+    List<Widget> tabs = [];
+    List<Widget> body = [];
+
+    for (String tabText in tabsTextList) {
+      // Create a tab item
+      tabs.add(Text(tabText));
+
+      // Create a target item
+      body.add(
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            controller: ScrollController(),
+            itemCount: 40,
+            itemBuilder: (_, int i) {
+              List<Widget> columns = [];
+              for (int c = 0; c < columnNumber; c++) {
+                columns.add(Text('$tabText column: $c item: $i ',
+                    style: Theme.of(context).textTheme.headline6));
+              }
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: columns,
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+        appBar: AppBar(title: Text('Multiple scrolls')),
+        body: AnchorTabPanel(tabs: tabs, body: body));
   }
 }
