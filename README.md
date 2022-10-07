@@ -3,6 +3,11 @@ This project is a way to implement a anchor tabs panel like the one of the rhymi
 The idea is that sometimes you have a big list where you can scroll, 
 but you still want buttons to help the user to navigate to different scroll positions, and also want that the selected button keeps updated as you scroll
 
+Anchor tabs provide a great user experience as it let the user do what they like most: keep scrolling. While providing a way to navigate to specific positions of that scroll.
+
+I made this video explaining how to use this package:
+https://www.youtube.com/watch?v=CPql7o1utiM
+
 ![Anchor tabs demo](https://raw.githubusercontent.com/ivofernandes/anchor_tabs/master/doc/usage_example.gif?raw=true)
 
 ## Features
@@ -14,7 +19,7 @@ Scrolling will update the tab button selected
 
 Add the dependency to your `pubspec.yaml`:
 ```
-anchor_tabs: ^0.0.1
+anchor_tabs: ^0.0.5
 ```
 
 ## Usage

@@ -6,3 +6,5 @@ Avoid rebuild loops caused by ensure visible in the header buttons
 Reformat
 ## 0.0.4
 Improved example and documentation
+##0.0.5
+Added video to the documention

@@ -114,7 +114,8 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
       GlobalKey tabKey = GlobalKey(debugLabel: 'tab $i');
       keysTabs[i] = tabKey;
 
-      tabsItems.add(Container(
+      tabsItems.add(
+        Container(
           margin: const EdgeInsets.symmetric(horizontal: 5.0),
           child: Column(
             children: [
@@ -139,7 +140,9 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
                     }
                   }),
             ],
-          )));
+          ),
+        ),
+      );
     }
 
     Widget tabsWidget = Container(
@@ -177,10 +180,12 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
                 return;
               }
 
-              setState(() {
-                selectedTab = currentIndex;
-                scrollToWidgetWithKey(keysTabs[currentIndex]!);
-              });
+              setState(
+                () {
+                  selectedTab = currentIndex;
+                  scrollToWidgetWithKey(keysTabs[currentIndex]!);
+                },
+              );
             }
           }
         },
