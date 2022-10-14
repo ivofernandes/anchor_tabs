@@ -43,7 +43,17 @@ class SimpleExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> tabsText = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    DateTime today = DateTime.now();
+
+    List<String> tabsText = [
+      'Today',
+      'Yesterday',
+    ];
+
+    for (int i = 2; i < 10; i++) {
+      DateTime pastDate = today.subtract(Duration(days: i));
+      tabsText.add('${pastDate.day}/${pastDate.month}');
+    }
 
     List<Widget> tabs = [];
     List<Widget> body = [];
