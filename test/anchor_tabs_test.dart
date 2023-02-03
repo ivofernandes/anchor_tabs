@@ -22,7 +22,7 @@ void main() {
           itemBuilder: (BuildContext ctxt, int i) {
             return Text('$element  $i',
                 style: Theme.of(ctxt).textTheme.headline6);
-          }));
+          },),);
     }
 
     final anchorTabPanel = AnchorTabPanel(

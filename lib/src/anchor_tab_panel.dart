@@ -160,7 +160,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
   /// Generate block for the index
   Widget generateBlock(
       int index, Widget widgetMapKey, double screenWidth, Widget targetWidget) {
-    final GlobalKey key = GlobalKey(debugLabel: 'block' + index.toString());
+    final GlobalKey key = GlobalKey(debugLabel: 'block$index');
     keysBody[index] = key;
 
     return VisibilityDetector(
