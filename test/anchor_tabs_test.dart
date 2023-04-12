@@ -4,25 +4,39 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('adds one to input values', () {
-    List<String> tabsText = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    final List<String> tabsText = [
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j'
+    ];
 
-    List<Widget> tabs = [];
-    List<Widget> body = [];
+    final List<Widget> tabs = [];
+    final List<Widget> body = [];
 
-    for (var element in tabsText) {
+    for (final String element in tabsText) {
       // Create a tab item
-      tabs.add(Text(element));
+      tabs.add(
+        Text(element),
+      );
 
       // Create a target item
-      body.add(ListView.builder(
+      body.add(
+        ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           controller: ScrollController(),
           itemCount: 40,
-          itemBuilder: (BuildContext ctxt, int i) {
-            return Text('$element  $i',
-                style: Theme.of(ctxt).textTheme.headline6);
-          },),);
+          itemBuilder: (BuildContext ctxt, int i) => Text('$element  $i',
+              style: Theme.of(ctxt).textTheme.headlineSmall),
+        ),
+      );
     }
 
     final anchorTabPanel = AnchorTabPanel(
@@ -30,5 +44,7 @@ void main() {
       body: body,
       rebuildBody: true,
     );
+
+    debugPrint(anchorTabPanel.toStringDeep());
   });
 }

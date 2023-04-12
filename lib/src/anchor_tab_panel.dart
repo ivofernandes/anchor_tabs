@@ -27,18 +27,17 @@ class AnchorTabPanel extends StatefulWidget {
   /// Flag that you can put to false to avoid build each time the selected tab changes
   final bool rebuildBody;
 
-  const AnchorTabPanel(
-      {required this.tabs,
-      required this.body,
-      this.animationDuration = const Duration(milliseconds: 1000),
-      this.animationCurve = Curves.ease,
-      this.scrollController,
-      this.rebuildBody = true,
-      this.tabHeight = 35,
-      this.selectedTabHeight = 40,
-      Key? key})
-      : assert(tabs.length == body.length),
-        super(key: key);
+  const AnchorTabPanel({
+    required this.tabs,
+    required this.body,
+    this.animationDuration = const Duration(milliseconds: 1000),
+    this.animationCurve = Curves.ease,
+    this.scrollController,
+    this.rebuildBody = true,
+    this.tabHeight = 35,
+    this.selectedTabHeight = 40,
+    super.key,
+  }) : assert(tabs.length == body.length);
 
   @override
   _AnchorTabPanelState createState() => _AnchorTabPanelState();
@@ -66,11 +65,11 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
   Widget build(BuildContext context) {
     keysTabs = List.generate(widget.tabs.length, (index) => null);
 
-    double screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
-    Widget tabsWidget = createTabsWidget();
+    final Widget tabsWidget = createTabsWidget();
 
-    List<Widget> blocks = [];
+    final List<Widget> blocks = [];
 
     // Create the body widgets just once
     // as the set state is just to to control the selected tab
@@ -80,8 +79,8 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
       visibility = List.generate(widget.tabs.length, (index) => 0);
       keysBody = List.generate(widget.body.length, (index) => null);
       for (int i = 0; i < widget.body.length; i++) {
-        Widget widgetMapKey = widget.tabs[i];
-        Widget targetWiget = widget.body[i];
+        final Widget widgetMapKey = widget.tabs[i];
+        final Widget targetWiget = widget.body[i];
         blocks.add(generateBlock(i, widgetMapKey, screenWidth, targetWiget));
       }
 
@@ -95,7 +94,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
       );
     }
 
-    Column result = Column(
+    final Column result = Column(
       children: [
         tabsWidget,
         bodyWidget!,
@@ -107,22 +106,22 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
 
   Widget createTabsWidget() {
     // Create the tabs widget
-    List<Widget> tabsItems = [];
+    final List<Widget> tabsItems = [];
 
     for (int i = 0; i < widget.tabs.length; i++) {
-      Widget widgetMapKey = widget.tabs[i];
-      GlobalKey tabKey = GlobalKey(debugLabel: 'tab $i');
+      final Widget widgetMapKey = widget.tabs[i];
+      final GlobalKey tabKey = GlobalKey(debugLabel: 'tab $i');
       keysTabs[i] = tabKey;
 
       tabsItems.add(
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
           child: Column(
             children: [
               MaterialButton(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                      borderRadius: BorderRadius.circular(10)),
                   key: tabKey,
                   height: selectedTab == i
                       ? widget.selectedTabHeight
@@ -145,7 +144,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
       );
     }
 
-    Widget tabsWidget = Container(
+    final Widget tabsWidget = Container(
       margin: const EdgeInsets.all(5),
       height: widget.selectedTabHeight + 10,
       child: ListView(
@@ -166,13 +165,13 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
     return VisibilityDetector(
         key: key,
         onVisibilityChanged: (visibilityInfo) {
-          var visiblePercentage = visibilityInfo.visibleFraction * 100;
+          final visiblePercentage = visibilityInfo.visibleFraction * 100;
           visibility![index] = visiblePercentage;
-          int currentIndex = lastVisibleIndex(visibility!);
+          final int currentIndex = lastVisibleIndex(visibility!);
 
-          bool validIndex = currentIndex >= 0;
-          bool changedTab = selectedTab != currentIndex;
-          bool isVisible = visiblePercentage > 0;
+          final bool validIndex = currentIndex >= 0;
+          final bool changedTab = selectedTab != currentIndex;
+          final bool isVisible = visiblePercentage > 0;
           if (validIndex && changedTab && isVisible) {
             if (mounted) {
               if (DateTime.now()
@@ -201,7 +200,7 @@ class _AnchorTabPanelState extends State<AnchorTabPanel> {
   }
 
   static int lastVisibleIndex(List<double> visibility) {
-    int lastIndex = -1;
+    const int lastIndex = -1;
 
     if (visibility[0] > 0) {
       return 0;

@@ -9,69 +9,71 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData.light(),
-        debugShowCheckedModeBanner: false,
-        home: Builder(
-          builder: (context) => Scaffold(
-            appBar: AppBar(
-              title: const Text('Anchor tabs example'),
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.add,
-                  ),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return const MultiScrollExample();
-                    }),
-                  ),
-                )
-              ],
-            ),
-            body: const SimpleExample(),
+  Widget build(BuildContext context) => MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData.light(),
+      debugShowCheckedModeBanner: false,
+      home: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Anchor tabs example'),
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.add,
+                ),
+                onPressed: () => Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                      builder: (context) => const MultiScrollExample()),
+                ),
+              )
+            ],
           ),
-        ));
-  }
+          body: const SimpleExample(),
+        ),
+      ));
 }
 
 class SimpleExample extends StatelessWidget {
-  const SimpleExample({Key? key}) : super(key: key);
+  const SimpleExample({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    DateTime today = DateTime.now();
+    final DateTime today = DateTime.now();
 
-    List<String> tabsText = [
+    final List<String> tabsText = [
       'Today',
       'Yesterday',
     ];
 
     for (int i = 2; i < 10; i++) {
-      DateTime pastDate = today.subtract(Duration(days: i));
+      final DateTime pastDate = today.subtract(Duration(days: i));
       tabsText.add('${pastDate.day}/${pastDate.month}');
     }
 
-    List<Widget> tabs = [];
-    List<Widget> body = [];
+    final List<Widget> tabs = [];
+    final List<Widget> body = [];
 
-    for (var element in tabsText) {
+    for (final element in tabsText) {
       // Create a tab item
       tabs.add(Text(element));
 
       // Create a target item
-      body.add(ListView.builder(
+      body.add(
+        ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           controller: ScrollController(),
           itemCount: 40,
-          itemBuilder: (BuildContext ctxt, int i) {
-            return Text('$element  $i',
-                style: Theme.of(ctxt).textTheme.headline6);
-          }));
+          itemBuilder: (BuildContext ctxt, int i) => Text(
+            '$element  $i',
+            style: Theme.of(ctxt).textTheme.headlineSmall,
+          ),
+        ),
+      );
     }
 
     return Container(
@@ -91,12 +93,12 @@ class SimpleExample extends StatelessWidget {
 }
 
 class MultiScrollExample extends StatelessWidget {
-  const MultiScrollExample({Key? key}) : super(key: key);
+  const MultiScrollExample({super.key});
 
   @override
   Widget build(BuildContext context) {
-    int columnNumber = 6;
-    List<String> tabsTextList = [
+    const int columnNumber = 6;
+    final List<String> tabsTextList = [
       'a',
       'b',
       'c',
@@ -109,12 +111,14 @@ class MultiScrollExample extends StatelessWidget {
       'j'
     ];
 
-    List<Widget> tabs = [];
-    List<Widget> body = [];
+    final List<Widget> tabs = [];
+    final List<Widget> body = [];
 
-    for (String tabText in tabsTextList) {
+    for (final String tabText in tabsTextList) {
       // Create a tab item
-      tabs.add(Text(tabText));
+      tabs.add(
+        Text(tabText),
+      );
 
       // Create a target item
       body.add(
@@ -126,10 +130,14 @@ class MultiScrollExample extends StatelessWidget {
             controller: ScrollController(),
             itemCount: 40,
             itemBuilder: (_, int i) {
-              List<Widget> columns = [];
+              final List<Widget> columns = [];
               for (int c = 0; c < columnNumber; c++) {
-                columns.add(Text('$tabText column: $c item: $i ',
-                    style: Theme.of(context).textTheme.headline6));
+                columns.add(
+                  Text(
+                    '$tabText column: $c item: $i ',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                );
               }
 
               return SingleChildScrollView(
@@ -145,7 +153,10 @@ class MultiScrollExample extends StatelessWidget {
     }
 
     return Scaffold(
-        appBar: AppBar(title: Text('Multiple scrolls')),
-        body: AnchorTabPanel(tabs: tabs, body: body));
+      appBar: AppBar(
+        title: const Text('Multiple scrolls'),
+      ),
+      body: AnchorTabPanel(tabs: tabs, body: body),
+    );
   }
 }
