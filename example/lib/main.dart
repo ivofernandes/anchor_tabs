@@ -16,6 +16,14 @@ class MyApp extends StatelessWidget {
       home: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.build),
+              onPressed: () => Navigator.of(context).push<dynamic>(
+                MaterialPageRoute<dynamic>(
+                  builder: (context) => TestAnchorTabPanelBuilder(),
+                ),
+              ),
+            ),
             title: const Text('Anchor tabs example'),
             actions: [
               IconButton(
@@ -159,4 +167,41 @@ class MultiScrollExample extends StatelessWidget {
       body: AnchorTabPanel(tabs: tabs, body: body),
     );
   }
+}
+
+class TestAnchorTabPanelBuilder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Anchor Tab Panel Test'),
+        ),
+        body: AnchorTabPanelBuilder(
+          tabBuilder: (BuildContext context, int index) {
+            debugPrint('Tab builder called for index: $index');
+            return Text('Tab ${index + 1}');
+          },
+          bodyBuilder: (BuildContext context, int index) {
+            debugPrint('Body builder called for index: $index');
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: index % 2 == 0 ? Colors.orange : Colors.green,
+              child: Center(
+                child: Text(
+                  'Body ${index + 1}',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          },
+          itemCount: 100,
+          animationDuration: const Duration(milliseconds: 1000),
+          animationCurve: Curves.ease,
+          tabHeight: 35,
+          selectedTabHeight: 40,
+        ),
+      );
 }

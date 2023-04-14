@@ -13,5 +13,8 @@ Improved example and documentation
 ## 0.0.5
 Added video to the documention
 
-##0.0.6
+## 0.0.6
 Updated the dependencies
+
+## 0.0.7
+Added anchor tabs panel builder

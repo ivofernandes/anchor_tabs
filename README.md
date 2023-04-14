@@ -72,6 +72,53 @@ Package url:
 https://pub.dev/packages/anchor_tabs
 
 
+## Builder
+For memory management reasons, this package also has an experimental anchor_tab_panel_builder that uses a list view to
+build the body elements only when the scroll positions are near them. This is a great way to improve the performance of your app.
+
+Eager to hear feedback on that feature, so if you have some problem with it please create an issue or a pull request
+in the github repository.
+
+
+```dart
+class TestAnchorTabPanelBuilder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Anchor Tab Panel Test'),
+        ),
+        body: AnchorTabPanelBuilder(
+          tabBuilder: (BuildContext context, int index) {
+            debugPrint('Tab builder called for index: $index');
+            return Text('Tab ${index + 1}');
+          },
+          bodyBuilder: (BuildContext context, int index) {
+            debugPrint('Body builder called for index: $index');
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: index % 2 == 0 ? Colors.orange : Colors.green,
+              child: Center(
+                child: Text(
+                  'Body ${index + 1}',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            );
+          },
+          itemCount: 100,
+          animationDuration: const Duration(milliseconds: 1000),
+          animationCurve: Curves.ease,
+          tabHeight: 35,
+          selectedTabHeight: 40,
+        ),
+      );
+}
+```
+
 ## Contribute on github
 If you have some problem that this package doesn't solve feel free to contribute on github
 https://github.com/ivofernandes/anchor_tabs
