@@ -18,3 +18,6 @@ Updated the dependencies
 
 ## 0.0.7
 Added anchor tabs panel builder
+
+## 0.0.8
+Improved anchor tabs panel builder with scrollable_positioned_list
