@@ -63,18 +63,21 @@ class _AnchorTabPanelBuilderState extends State<AnchorTabPanelBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    keysTabs = List.generate(widget.itemCount, (index) => GlobalKey(debugLabel: 'tab $index'));
+    keysTabs = List.generate(
+        widget.itemCount, (index) => GlobalKey(debugLabel: 'tab $index'));
 
     final double screenWidth = MediaQuery.of(context).size.width;
 
     final Widget tabsWidget = createTabsWidget();
 
-    final bool visibilityNotInitialized = visibility == null || visibility!.length != widget.itemCount;
+    final bool visibilityNotInitialized =
+        visibility == null || visibility!.length != widget.itemCount;
     final bool rebuildBodyRequested = widget.rebuildBody;
 
     if (visibilityNotInitialized || rebuildBodyRequested) {
       visibility = List.generate(widget.itemCount, (index) => 0);
-      keysBody = List.generate(widget.itemCount, (index) => GlobalKey(debugLabel: 'block$index'));
+      keysBody = List.generate(
+          widget.itemCount, (index) => GlobalKey(debugLabel: 'block$index'));
 
       bodyWidget = Expanded(
         child: ScrollablePositionedList.builder(
@@ -116,8 +119,12 @@ class _AnchorTabPanelBuilderState extends State<AnchorTabPanelBuilder> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 key: tabKey,
-                height: selectedTab == i ? widget.selectedTabHeight : widget.tabHeight,
-                color: selectedTab == i ? Theme.of(context).colorScheme.secondary : Theme.of(context).cardColor,
+                height: selectedTab == i
+                    ? widget.selectedTabHeight
+                    : widget.tabHeight,
+                color: selectedTab == i
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).cardColor,
                 child: widget.tabBuilder(context, i),
                 onPressed: () {
                   itemScrollController.scrollTo(
@@ -165,7 +172,8 @@ class _AnchorTabPanelBuilderState extends State<AnchorTabPanelBuilder> {
         final bool isVisible = visiblePercentage > 0;
         if (validIndex && changedTab && isVisible) {
           if (mounted) {
-            if (DateTime.now().isBefore(ensureVisibleTime.add(widget.animationDuration))) {
+            if (DateTime.now()
+                .isBefore(ensureVisibleTime.add(widget.animationDuration))) {
               return;
             }
 
