@@ -11,7 +11,7 @@ Reformat
 Improved example and documentation
 
 ## 0.0.5
-Added video to the documention
+Added video to the documentation
 
 ## 0.0.6
 Updated the dependencies
@@ -21,3 +21,6 @@ Added anchor tabs panel builder
 
 ## 0.0.8
 Improved anchor tabs panel builder with scrollable_positioned_list
+
+## 0.0.9
+Improved documentation

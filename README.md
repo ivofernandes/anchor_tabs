@@ -6,6 +6,7 @@ but you still want buttons to help the user to navigate to different scroll posi
 Anchor tabs provide a great user experience as it let the user do what they like most: keep scrolling. While providing a way to navigate to specific positions of that scroll.
 
 I made this video explaining how to use this package:
+
 https://www.youtube.com/watch?v=CPql7o1utiM
 
 ![Anchor tabs demo](https://raw.githubusercontent.com/ivofernandes/anchor_tabs/master/doc/usage_example.gif?raw=true)
@@ -19,35 +20,50 @@ Scrolling will update the tab button selected
 
 Add the dependency to your `pubspec.yaml`:
 ```
-anchor_tabs: ^0.0.5
+anchor_tabs: ^0.0.9
 ```
 
 ## Usage
 ```dart
 class SimpleExample extends StatelessWidget {
-  const SimpleExample({Key? key}) : super(key: key);
+  const SimpleExample({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    List<String> tabsText = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    final DateTime today = DateTime.now();
 
-    List<Widget> tabs = [];
-    List<Widget> body = [];
+    final List<String> tabsText = [
+      'Today',
+      'Yesterday',
+    ];
 
-    for (var element in tabsText) {
+    for (int i = 2; i < 10; i++) {
+      final DateTime pastDate = today.subtract(Duration(days: i));
+      tabsText.add('${pastDate.day}/${pastDate.month}');
+    }
+
+    final List<Widget> tabs = [];
+    final List<Widget> body = [];
+
+    for (final element in tabsText) {
       // Create a tab item
       tabs.add(Text(element));
 
       // Create a target item
-      body.add(ListView.builder(
+      body.add(
+        ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           controller: ScrollController(),
           itemCount: 40,
-          itemBuilder: (BuildContext ctxt, int i) {
-            return Text('$element  $i',
-                style: Theme.of(ctxt).textTheme.headline6);
-          }));
+          itemBuilder: (BuildContext ctxt, int i) => Text(
+            '$element  $i',
+            style: Theme.of(ctxt).textTheme.headlineSmall,
+          ),
+        ),
+      );
     }
 
     return Container(
@@ -55,13 +71,16 @@ class SimpleExample extends StatelessWidget {
       child: Column(
         children: [
           const Text('Simple example of anchor tabs'),
-          Expanded(child: AnchorTabPanel(tabs: tabs, body: body)),
+          Expanded(
+              child: AnchorTabPanel(
+            tabs: tabs,
+            body: body,
+          )),
         ],
       ),
     );
   }
 }
-
 ```
 
 ## Additional information
