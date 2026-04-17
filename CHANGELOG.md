@@ -24,3 +24,6 @@ Improved anchor tabs panel builder with scrollable_positioned_list
 
 ## 0.0.9
 Improved documentation
+
+## 0.1.0
+More configurations

@@ -20,7 +20,7 @@ Scrolling will update the tab button selected
 
 Add the dependency to your `pubspec.yaml`:
 ```
-anchor_tabs: ^0.0.9
+anchor_tabs: ^0.1.0
 ```
 
 ## Usage
@@ -83,6 +83,28 @@ class SimpleExample extends StatelessWidget {
 }
 ```
 
+
+## Tab customization
+
+You can now customize selected/unselected colors (including your app secondary color), text styles, elevation and spacing:
+
+```dart
+AnchorTabPanel(
+  tabs: tabs,
+  body: body,
+  tabStyle: AnchorTabStyle(
+    selectedBackgroundColor: Theme.of(context).colorScheme.secondary,
+    unselectedBackgroundColor: Theme.of(context).colorScheme.surface,
+    selectedTextStyle: TextStyle(
+      color: Theme.of(context).colorScheme.onSecondary,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+)
+```
+
+By default, selected tab labels use `onSecondary` and unselected labels use `onSurfaceVariant` for better contrast.
+
 ## Additional information
 This AnchorTabPanel widget have more fields like the one to configure the size of the tab buttons
 
@@ -137,6 +159,12 @@ class TestAnchorTabPanelBuilder extends StatelessWidget {
       );
 }
 ```
+
+
+## Builder performance notes
+
+`AnchorTabPanelBuilder` now tracks the selected tab using `ItemPositionsListener` from `scrollable_positioned_list`, instead of adding one visibility detector per body item.
+This reduces overhead on large lists and keeps updates smooth when item counts are high.
 
 ## Contribute on github
 If you have some problem that this package doesn't solve feel free to contribute on github

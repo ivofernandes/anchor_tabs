@@ -1,35 +1,37 @@
+import 'package:anchor_tabs/src/anchor_tab_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 typedef TabBuilder = Widget Function(BuildContext context, int index);
 typedef BodyBuilder = Widget Function(BuildContext context, int index);
 
 class AnchorTabPanelBuilder extends StatefulWidget {
-  /// Number of tabs
+  /// Number of tabs.
   final int itemCount;
 
-  /// Tab builder function
+  /// Tab builder function.
   final TabBuilder tabBuilder;
 
-  /// Body builder function
+  /// Body builder function.
   final BodyBuilder bodyBuilder;
 
-  /// Duration of the animation that selects the tab
+  /// Duration of the animation that selects the tab.
   final Duration animationDuration;
 
-  /// Curve of the animation that selects the tab
+  /// Curve of the animation that selects the tab.
   final Curve animationCurve;
 
-  /// Height of the tab bar buttons
-
+  /// Height of the tab bar buttons.
   final double tabHeight;
 
-  /// Height for the selected tab button
+  /// Height for the selected tab button.
   final double selectedTabHeight;
 
-  /// Flag that you can put to false to avoid build each time the selected tab changes
+  /// Flag kept for backwards compatibility. Body is lazily built by default.
   final bool rebuildBody;
+
+  /// Extra style customization for tabs.
+  final AnchorTabStyle tabStyle;
 
   const AnchorTabPanelBuilder({
     required this.itemCount,
@@ -40,169 +42,122 @@ class AnchorTabPanelBuilder extends StatefulWidget {
     this.rebuildBody = true,
     this.tabHeight = 35,
     this.selectedTabHeight = 40,
+    this.tabStyle = const AnchorTabStyle(),
     super.key,
   });
 
   @override
-  _AnchorTabPanelBuilderState createState() => _AnchorTabPanelBuilderState();
+  State<AnchorTabPanelBuilder> createState() => _AnchorTabPanelBuilderState();
 }
 
 class _AnchorTabPanelBuilderState extends State<AnchorTabPanelBuilder> {
-  late List<GlobalKey?> keysTabs;
-  late List<GlobalKey?> keysBody;
-  Widget? bodyWidget;
-  List<double>? visibility;
-  int selectedTab = 0;
-  DateTime ensureVisibleTime = DateTime.now();
-  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+
+  int _selectedTab = 0;
+  DateTime _ensureVisibleTime = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    _itemPositionsListener.itemPositions.addListener(_syncTabFromScroll);
   }
 
   @override
-  Widget build(BuildContext context) {
-    keysTabs = List.generate(
-        widget.itemCount, (index) => GlobalKey(debugLabel: 'tab $index'));
-
-    final double screenWidth = MediaQuery.of(context).size.width;
-
-    final Widget tabsWidget = createTabsWidget();
-
-    final bool visibilityNotInitialized =
-        visibility == null || visibility!.length != widget.itemCount;
-    final bool rebuildBodyRequested = widget.rebuildBody;
-
-    if (visibilityNotInitialized || rebuildBodyRequested) {
-      visibility = List.generate(widget.itemCount, (index) => 0);
-      keysBody = List.generate(
-          widget.itemCount, (index) => GlobalKey(debugLabel: 'block$index'));
-
-      bodyWidget = Expanded(
-        child: ScrollablePositionedList.builder(
-          itemCount: widget.itemCount,
-          itemBuilder: (BuildContext context, int index) {
-            final Widget body = widget.bodyBuilder(context, index);
-            return generateBlock(index, screenWidth, body);
-          },
-          itemScrollController: itemScrollController,
-          itemPositionsListener: ItemPositionsListener.create(),
-        ),
-      );
-    }
-
-    final Column result = Column(
-      children: [
-        tabsWidget,
-        bodyWidget!,
-      ],
-    );
-
-    return result;
+  void dispose() {
+    _itemPositionsListener.itemPositions.removeListener(_syncTabFromScroll);
+    super.dispose();
   }
 
-  Widget createTabsWidget() {
-    final List<Widget> tabsItems = [];
+  @override
+  Widget build(BuildContext context) => Column(
+        children: [
+          _createTabsWidget(),
+          Expanded(
+            child: ScrollablePositionedList.builder(
+              itemCount: widget.itemCount,
+              itemBuilder: (BuildContext context, int index) => widget.bodyBuilder(context, index),
+              itemScrollController: _itemScrollController,
+              itemPositionsListener: _itemPositionsListener,
+            ),
+          ),
+        ],
+      );
 
-    for (int i = 0; i < widget.itemCount; i++) {
-      final GlobalKey tabKey = keysTabs[i]!;
+  Widget _createTabsWidget() => Container(
+        margin: widget.tabStyle.tabBarMargin,
+        height: widget.selectedTabHeight + 10,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: widget.itemCount,
+          itemBuilder: (BuildContext context, int i) {
+            final bool isSelected = _selectedTab == i;
+            final AnchorTabStyle style = widget.tabStyle;
 
-      tabsItems.add(
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          child: Column(
-            children: [
-              MaterialButton(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            return Container(
+              margin: style.tabMargin,
+              child: MaterialButton(
+                elevation: style.elevation,
+                shape: RoundedRectangleBorder(borderRadius: style.borderRadius),
+                padding: style.tabPadding,
+                height: isSelected ? widget.selectedTabHeight : widget.tabHeight,
+                color: isSelected
+                    ? (style.selectedBackgroundColor ?? Theme.of(context).colorScheme.secondary)
+                    : (style.unselectedBackgroundColor ?? Theme.of(context).cardColor),
+                child: DefaultTextStyle.merge(
+                  style: isSelected
+                      ? (style.selectedTextStyle ??
+                          TextStyle(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            fontWeight: FontWeight.w600,
+                          ))
+                      : (style.unselectedTextStyle ??
+                          TextStyle(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          )),
+                  child: widget.tabBuilder(context, i),
                 ),
-                key: tabKey,
-                height: selectedTab == i
-                    ? widget.selectedTabHeight
-                    : widget.tabHeight,
-                color: selectedTab == i
-                    ? Theme.of(context).colorScheme.secondary
-                    : Theme.of(context).cardColor,
-                child: widget.tabBuilder(context, i),
                 onPressed: () {
-                  itemScrollController.scrollTo(
+                  _ensureVisibleTime = DateTime.now();
+                  _itemScrollController.scrollTo(
                     index: i,
                     duration: widget.animationDuration,
                     curve: widget.animationCurve,
                   );
                   if (mounted) {
                     setState(() {
-                      selectedTab = i;
+                      _selectedTab = i;
                     });
                   }
                 },
               ),
-            ],
-          ),
+            );
+          },
         ),
       );
+
+  void _syncTabFromScroll() {
+    if (DateTime.now().isBefore(_ensureVisibleTime.add(widget.animationDuration))) {
+      return;
     }
 
-    final Widget tabsWidget = Container(
-      margin: const EdgeInsets.all(5),
-      height: widget.selectedTabHeight + 10,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: tabsItems,
-      ),
-    );
-
-    return tabsWidget;
-  }
-
-  Widget generateBlock(int index, double screenWidth, Widget targetWidget) {
-    final GlobalKey key = GlobalKey(debugLabel: 'block$index');
-    keysBody[index] = key;
-    return VisibilityDetector(
-      key: key,
-      onVisibilityChanged: (visibilityInfo) {
-        final visiblePercentage = visibilityInfo.visibleFraction * 100;
-        visibility![index] = visiblePercentage;
-        final int currentIndex = lastVisibleIndex(visibility!);
-
-        final bool validIndex = currentIndex >= 0;
-        final bool changedTab = selectedTab != currentIndex;
-        final bool isVisible = visiblePercentage > 0;
-        if (validIndex && changedTab && isVisible) {
-          if (mounted) {
-            if (DateTime.now()
-                .isBefore(ensureVisibleTime.add(widget.animationDuration))) {
-              return;
-            }
-
-            setState(
-              () {
-                selectedTab = currentIndex;
-              },
-            );
-          }
-        }
-      },
-      child: targetWidget,
-    );
-  }
-
-  static int lastVisibleIndex(List<double> visibility) {
-    const int lastIndex = -1;
-    if (visibility[0] > 0) {
-      return 0;
-    } else if (visibility[visibility.length - 1] > 0) {
-      return visibility.length - 1;
+    final Iterable<ItemPosition> positions = _itemPositionsListener.itemPositions.value;
+    if (positions.isEmpty) {
+      return;
     }
 
-    for (int i = 1; i < visibility.length - 1; i++) {
-      if (visibility[i] > 0) {
-        return i;
-      }
+    final List<ItemPosition> visible = positions.where((ItemPosition p) => p.itemTrailingEdge > 0).toList()
+      ..sort((ItemPosition a, ItemPosition b) => a.index.compareTo(b.index));
+
+    if (visible.isEmpty) {
+      return;
     }
 
-    return lastIndex;
+    final int currentIndex = visible.first.index;
+    if (currentIndex != _selectedTab && mounted) {
+      setState(() {
+        _selectedTab = currentIndex;
+      });
+    }
   }
 }
